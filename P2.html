@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор валових викидів</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Калькулятор валових викидів</h2>
+        <label for="coal">Донецьке газове вугілля (т):</label>
+        <input type="number" id="coal" value="322975.77">
+        
+        <label for="mazut">Високосірчистий мазут (т):</label>
+        <input type="number" id="mazut" value="220344.40">
+        
+        <label for="gas">Природний газ (м³):</label>
+        <input type="number" id="gas" value="240675.00">
+        
+        <button onclick="calculateEmissions()">Розрахувати</button>
+        
+        <h3>Результати:</h3>
+        <p id="k_coal"></p>
+        <p id="coalResult"></p>
+        <p id="k_mazut"></p>
+        <p id="mazutResult"></p>
+        <p id="k_gas"></p>
+        <p id="gasResult"></p>
+    </div>
+    
+    <script>
+        function calculateEmissions() {
+            const coal = parseFloat(document.getElementById('coal').value);
+            const mazut = parseFloat(document.getElementById('mazut').value);
+            const gas = parseFloat(document.getElementById('gas').value);
+            
+            const k_coal = 150; // г/ГДж 
+            const k_mazut = 0.57; // г/ГДж
+            const k_gas = 0; // Тверді частинки відсутні
+            
+            const Qr_coal = 20.47; // МДж/кг
+            const Qr_mazut = 40.40; // МДж/кг
+            const Qr_gas = 33.08; // МДж/м³
+            
+            const emissionsCoal = (k_coal * coal * Qr_coal) / 1e6;
+            const emissionsMazut = (k_mazut * mazut * Qr_mazut) / 1e6;
+            const emissionsGas = 0;
+            
+            document.getElementById('k_coal').innerText = `1.1. Показник емісії твердих частинок при спалюванні вугілля: ${k_coal} г/ГДж`;
+            document.getElementById('coalResult').innerText = `1.2. Валовий викид при спалюванні вугілля: ${emissionsCoal.toFixed(2)} т`;
+            document.getElementById('k_mazut').innerText = `1.3. Показник емісії твердих частинок при спалюванні мазуту: ${k_mazut} г/ГДж`;
+            document.getElementById('mazutResult').innerText = `1.4. Валовий викид при спалюванні мазуту: ${emissionsMazut.toFixed(2)} т`;
+            document.getElementById('k_gas').innerText = `1.5. Показник емісії твердих частинок при спалюванні природного газу: ${k_gas} г/ГДж`;
+            document.getElementById('gasResult').innerText = `1.6. Валовий викид при спалюванні природного газу: ${emissionsGas.toFixed(2)} т`;
+        }
+    </script>
+</body>
+</html>
