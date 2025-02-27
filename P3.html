@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Калькулятор прибутку сонячної електростанції</title>
+</head>
+<body>
+    <h1>Калькулятор прибутку сонячної електростанції</h1>
+
+    <label for="pc">Середньодобова потужність станції (МВт):</label>
+    <input type="number" id="pc" value="5"><br><br>
+
+    <label for="sigma1">Середньоквадратичне відхилення прогнозу до вдосконалення (МВт):</label>
+    <input type="number" id="sigma1" value="1"><br><br>
+
+    <label for="sigma2">Середньоквадратичне відхилення прогнозу після вдосконалення (МВт):</label>
+    <input type="number" id="sigma2" value="0.25"><br><br>
+
+    <label for="B">Вартість електроенергії (грн/кВт·год):</label>
+    <input type="number" id="B" value="7"><br><br>
+
+    <button onclick="calculateProfit()">Розрахувати</button><br><br>
+
+    <p>Результати до вдосконалення:</p>
+    <p>delta_m1: <span id="deltaM1"></span></p>
+    <p>W1: <span id="W1"></span> МВт-год</p>
+    <p>Прибуток 1: <span id="profit1"></span> грн</p>
+    <p>W2: <span id="W2"></span> МВт-год</p>
+    <p>Штраф 1: <span id="penalty1"></span> грн</p>
+    <p>Прибуток до вдосконалення: <span id="profitBefore"></span> грн</p>
+
+    <p>Результати після вдосконалення:</p>
+    <p>delta_m2: <span id="deltaM2"></span></p>
+    <p>W3: <span id="W3"></span> МВт-год</p>
+    <p>Прибуток 2: <span id="profit2"></span> грн</p>
+    <p>W4: <span id="W4"></span> МВт-год</p>
+    <p>Штраф 2: <span id="penalty2"></span> грн</p>
+    <p>Прибуток після вдосконалення: <span id="profitAfter"></span> грн</p>
+
+    <script>
+        function calculateProfit() {
+            const pc = parseFloat(document.getElementById("pc").value);
+            const sigma1 = parseFloat(document.getElementById("sigma1").value);
+            const sigma2 = parseFloat(document.getElementById("sigma2").value);
+            const B = parseFloat(document.getElementById("B").value);
+
+            function powerDistribution(p, pc, sigma) {
+                const numerator = Math.exp(-((p - pc) ** 2) / (2 * sigma ** 2));
+                const denominator = sigma * Math.sqrt(2 * Math.PI);
+                return numerator / denominator;
+            }
+
+            function integrate(func, a, b, args) {
+                const steps = 1000;
+                const stepSize = (b - a) / steps;
+                let result = 0;
+                for (let i = 0; i < steps; i++) {
+                    const x1 = a + i * stepSize;
+                    const x2 = x1 + stepSize;
+                    result += (func(x1, ...args) + func(x2, ...args)) * stepSize / 2;
+                }
+                return result;
+            }
+
+            const deltaM1 = integrate(powerDistribution, 4.75, 5.25, [pc, sigma1]);
+            const deltaM2 = integrate(powerDistribution, 4.75, 5.25, [pc, sigma2]);
+
+            const W1 = pc * 24 * deltaM1;
+            const profit1 = W1 * B * 1000;
+
+            const W2 = pc * 24 * (1 - deltaM1);
+            const penalty1 = W2 * B * 1000;
+
+            const W3 = pc * 24 * deltaM2;
+            const profit2 = W3 * B * 1000;
+
+            const W4 = pc * 24 * (1 - deltaM2);
+            const penalty2 = W4 * B * 1000;
+
+            const profitBefore = profit1 - penalty1;
+            const profitAfter = profit2 - penalty2;
+
+            document.getElementById("deltaM1").textContent = deltaM1.toFixed(4);
+            document.getElementById("W1").textContent = W1.toFixed(2);
+            document.getElementById("profit1").textContent = profit1.toFixed(2);
+            document.getElementById("W2").textContent = W2.toFixed(2);
+            document.getElementById("penalty1").textContent = penalty1.toFixed(2);
+            document.getElementById("profitBefore").textContent = profitBefore.toFixed(2);
+
+            document.getElementById("deltaM2").textContent = deltaM2.toFixed(4);
+            document.getElementById("W3").textContent = W3.toFixed(2);
+            document.getElementById("profit2").textContent = profit2.toFixed(2);
+            document.getElementById("W4").textContent = W4.toFixed(2);
+            document.getElementById("penalty2").textContent = penalty2.toFixed(2);
+            document.getElementById("profitAfter").textContent = profitAfter.toFixed(2);
+        }
+    </script>
+</body>
+</html>
