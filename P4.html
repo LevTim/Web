@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб калькулятор КЗ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-left: 5px solid #007bff;
+        }
+    </style>
+    <script>
+        function calculateShortCircuit() {
+            const voltage = parseFloat(document.getElementById("voltage").value);
+            const impedance = parseFloat(document.getElementById("impedance").value);
+            const mode = document.getElementById("mode").value;
+            
+            if (voltage > 0 && impedance > 0) {
+                let shortCircuitCurrent = (voltage * 1000) / impedance;
+                let thermalStability = shortCircuitCurrent * 1.1;
+                let dynamicStability = shortCircuitCurrent * 1.2;
+                
+                let modeFactor = mode === "minimum" ? 0.8 : mode === "emergency" ? 1.2 : 1;
+                let adjustedCurrent = shortCircuitCurrent * modeFactor;
+                
+                document.getElementById("result").innerHTML = `
+                    <strong>Режим:</strong> ${mode}<br>
+                    <strong>Струм КЗ:</strong> ${adjustedCurrent.toFixed(2)} A<br>
+                    <strong>Термічна стійкість:</strong> ${thermalStability.toFixed(2)} A<br>
+                    <strong>Динамічна стійкість:</strong> ${dynamicStability.toFixed(2)} A
+                `;
+            } else {
+                document.getElementById("result").innerText = "Будь ласка, введіть коректні значення";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Веб калькулятор для розрахунку струму КЗ</h1>
+    
+    <div class="container">
+        <h2>Введіть дані для розрахунку струму КЗ</h2>
+        <label for="voltage">Напруга (кВ):</label>
+        <input type="number" id="voltage" required>
+        
+        <label for="impedance">Імпеданс (Ом):</label>
+        <input type="number" id="impedance" required>
+        
+        <label for="mode">Режим роботи:</label>
+        <select id="mode">
+            <option value="normal">Нормальний</option>
+            <option value="minimum">Мінімальний</option>
+            <option value="emergency">Аварійний</option>
+        </select>
+        
+        <button onclick="calculateShortCircuit()">Розрахувати струм КЗ</button>
+        
+        <div class="result">
+            <h3 id="result"></h3>
+        </div>
+    </div>
+</body>
+</html>
