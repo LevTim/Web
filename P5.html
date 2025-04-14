@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор Надійності та Збитків Електромереж</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .calculator-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .results p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        .results span {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .component-group {
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 3px solid #007bff;
+        }
+        .component-group label {
+            font-weight: normal;
+            color: #666;
+            font-size: 0.9em;
+        }
+         .component-group input[type="number"] {
+            width: calc(50% - 22px); /* Adjust width for side-by-side if needed */
+            display: inline-block; /* Or adjust layout */
+            margin-right: 10px;
+         }
+         .inline-inputs label{
+            display: inline-block;
+            width: 48%; /* Adjust as needed */
+            vertical-align: top;
+         }
+         .inline-inputs input{
+             width: 100%; /* Make input take full width of its label container */
+         }
+        .comparison-result {
+            font-weight: bold;
+            margin-top: 15px;
+            color: green;
+        }
+        .error {
+             color: red;
+             font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор Надійності та Збитків</h1>
+
+        <!-- Розділ 1: Порівняння надійності (Приклад 3.1) -->
+        <div class="calculator-section">
+            <h2>1. Порівняння Надійності Систем</h2>
+            <p>Розрахунок параметрів надійності для одноколової та двоколової систем електропередачі.</p>
+
+            <form id="reliabilityForm">
+                <h3>Параметри Одноколової Системи (ОС)</h3>
+                <p>Введіть частоту відмов (ω, рік⁻¹) та середній час відновлення (t_в, год) для компонентів:</p>
+
+                <div class="component-group">
+                    <h4>Елегазовий вимикач 110 кВ</h4>
+                    <div class="inline-inputs">
+                        <label>ω₁ (рік⁻¹): <input type="number" id="omega1" step="any" value="0.01"></label>
+                        <label>t_в₁ (год): <input type="number" id="tb1" step="any" value="30"></label>
+                    </div>
+                </div>
+                 <div class="component-group">
+                    <h4>ПЛ-110 кВ (10 км)</h4>
+                     <div class="inline-inputs">
+                        <label>ω₂ (рік⁻¹): <input type="number" id="omega2" step="any" value="0.07"></label>
+                        <label>t_в₂ (год): <input type="number" id="tb2" step="any" value="10"></label>
+                    </div>
+                </div>
+                 <div class="component-group">
+                    <h4>Трансформатор 110/10 кВ</h4>
+                     <div class="inline-inputs">
+                        <label>ω₃ (рік⁻¹): <input type="number" id="omega3" step="any" value="0.015"></label>
+                        <label>t_в₃ (год): <input type="number" id="tb3" step="any" value="100"></label>
+                    </div>
+                </div>
+                 <div class="component-group">
+                    <h4>Ввідний вимикач 10 кВ</h4>
+                     <div class="inline-inputs">
+                        <label>ω₄ (рік⁻¹): <input type="number" id="omega4" step="any" value="0.02"></label>
+                        <label>t_в₄ (год): <input type="number" id="tb4" step="any" value="15"></label>
+                    </div>
+                </div>
+                 <div class="component-group">
+                    <h4>6 приєднань 10 кВ (сумарно)</h4>
+                     <div class="inline-inputs">
+                        <label>ω₅ (рік⁻¹): <input type="number" id="omega5" step="any" value="0.18"></label> <!-- 0.03 * 6 -->
+                        <label>t_в₅ (год): <input type="number" id="tb5" step="any" value="2"></label>
+                    </div>
+                </div>
+
+                <label for="k_p_max_hours">Найбільша тривалість планового простою (год/рік):</label>
+                <input type="number" id="k_p_max_hours" step="any" value="43">
+
+                <h3>Параметри Двоколової Системи (ДС)</h3>
+                <label for="omega_sv">Частота відмов секційного вимикача (ω_св, рік⁻¹):</label>
+                <input type="number" id="omega_sv" step="any" value="0.02">
+
+                <button type="button" onclick="calculateReliability()">Розрахувати надійність</button>
+
+                <div id="reliabilityResults" class="results" style="display: none;">
+                    <h3>Результати розрахунку надійності:</h3>
+                    <p><strong>Одноколова система (ОС):</strong></p>
+                    <p>Частота відмов (ω_ос): <span id="omega_os"></span> рік⁻¹</p>
+                    <p>Середня тривалість відновлення (t_в.ос): <span id="tb_os"></span> год</p>
+                    <p>Коефіцієнт аварійного простою (k_а.ос): <span id="ka_os"></span></p>
+                    <p>Коефіцієнт планового простою (k_п.ос): <span id="kp_os"></span></p>
+                    <p><strong>Двоколова система (ДС):</strong></p>
+                    <p>Частота відмов одночасно двох кіл (ω_дк): <span id="omega_dk"></span> рік⁻¹</p>
+                    <p>Частота відмов ДС з урах. секційного вимикача (ω_дс): <span id="omega_ds"></span> рік⁻¹</p>
+                    <p class="comparison-result" id="comparison"></p>
+                </div>
+                 <div id="reliabilityError" class="error" style="display: none;"></div>
+            </form>
+        </div>
+
+        <!-- Розділ 2: Розрахунок збитків (Приклад 3.2) -->
+        <div class="calculator-section">
+            <h2>2. Розрахунок Збитків від Перерв Електропостачання</h2>
+            <p>Розрахунок для однотрансформаторної ГПП.</p>
+
+            <form id="lossForm">
+                <label for="z_per_a">Питомі збитки від аварійного недовипуску (З_пер.а, грн/кВт·год):</label>
+                <input type="number" id="z_per_a" step="any" value="23.6">
+
+                <label for="z_per_p">Питомі збитки від планового недовипуску (З_пер.п, грн/кВт·год):</label>
+                <input type="number" id="z_per_p" step="any" value="17.6">
+
+                <label for="omega_tr">Частота відмов трансформатора (ω, рік⁻¹):</label>
+                <input type="number" id="omega_tr" step="any" value="0.01">
+
+                <label for="tb_tr_years">Середній час аварійного відновлення трансформатора (t_в, років):</label>
+                <input type="number" id="tb_tr_years" step="any" value="0.045"> <!-- 45 * 10^-3 -->
+
+                <label for="kp_tr">Середній час планового простою трансформатора (k_п, частка року):</label>
+                <input type="number" id="kp_tr" step="any" value="0.004"> <!-- 4 * 10^-3 -->
+
+                <label for="pm_tr">Номінальна потужність трансформатора (P_м, кВт):</label>
+                <input type="number" id="pm_tr" step="any" value="5120"> <!-- 5.12 * 10^3 -->
+
+                <label for="tm_tr">Середньорічна кількість годин використання макс. навантаження (T_м, год/рік):</label>
+                <input type="number" id="tm_tr" step="any" value="6451">
+
+                <button type="button" onclick="calculateLosses()">Розрахувати збитки</button>
+
+                <div id="lossResults" class="results" style="display: none;">
+                     <h3>Результати розрахунку збитків:</h3>
+                     <p>Математичне сподівання аварійного недовипуску (M(W_нед.а)): <span id="mw_a"></span> кВт·год/рік</p>
+                     <p>Математичне сподівання планового недовипуску (M(W_нед.п)): <span id="mw_p"></span> кВт·год/рік</p>
+                     <p>Математичне сподівання збитків від переривання (З_пер): <span id="z_per"></span> грн/рік</p>
+                </div>
+                <div id="lossError" class="error" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function getVal(id) {
+            const value = parseFloat(document.getElementById(id).value);
+            if (isNaN(value)) {
+                 throw new Error(`Некоректне значення в полі ${document.querySelector(`label[for=${id}]`)?.innerText || id}`);
+            }
+            return value;
+        }
+
+        function calculateReliability() {
+            const resultsDiv = document.getElementById('reliabilityResults');
+            const errorDiv = document.getElementById('reliabilityError');
+            resultsDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            try {
+                // --- Одноколова система ---
+                const w1 = getVal('omega1'); const t1 = getVal('tb1');
+                const w2 = getVal('omega2'); const t2 = getVal('tb2');
+                const w3 = getVal('omega3'); const t3 = getVal('tb3');
+                const w4 = getVal('omega4'); const t4 = getVal('tb4');
+                const w5 = getVal('omega5'); const t5 = getVal('tb5'); // Сумарно для 6 приєднань
+
+                const omega_os = w1 + w2 + w3 + w4 + w5;
+                if (omega_os === 0) {
+                     throw new Error("Сумарна частота відмов (ω_ос) не може бути нульовою для подальших розрахунків.");
+                }
+
+                const sum_wt = (w1 * t1) + (w2 * t2) + (w3 * t3) + (w4 * t4) + (w5 * t5);
+                const tb_os_hours = sum_wt / omega_os;
+
+                const hours_in_year = 8760;
+                const ka_os = (omega_os * tb_os_hours) / hours_in_year;
+
+                const k_p_max_hours = getVal('k_p_max_hours');
+                const k_p_max = k_p_max_hours / hours_in_year; // Переводимо в частку року
+                const kp_os = 1.2 * k_p_max; // Згідно прикладу
+
+                // --- Двоколова система ---
+                const omega_sv = getVal('omega_sv');
+
+                // Частота відмов одночасно двох кіл (з прикладу)
+                const omega_dk = 2 * omega_os * (ka_os + kp_os);
+
+                // Частота відмов ДС з урахуванням секційного вимикача
+                const omega_ds = omega_dk + omega_sv;
+
+                // --- Відображення результатів ---
+                document.getElementById('omega_os').textContent = omega_os.toFixed(4);
+                document.getElementById('tb_os').textContent = tb_os_hours.toFixed(2);
+                document.getElementById('ka_os').textContent = ka_os.toExponential(2);
+                document.getElementById('kp_os').textContent = kp_os.toExponential(2);
+                document.getElementById('omega_dk').textContent = omega_dk.toExponential(2);
+                document.getElementById('omega_ds').textContent = omega_ds.toFixed(5);
+
+                // Порівняння
+                let comparisonText = `Порівняння: ω_ос = ${omega_os.toFixed(4)} рік⁻¹, ω_дс = ${omega_ds.toFixed(5)} рік⁻¹. `;
+                if (omega_ds < omega_os) {
+                    comparisonText += "Надійність двоколової системи значно вища.";
+                    document.getElementById('comparison').style.color = 'green';
+                } else if (omega_ds > omega_os) {
+                    comparisonText += "Надійність одноколової системи вища (нетипово).";
+                     document.getElementById('comparison').style.color = 'orange';
+                } else {
+                    comparisonText += "Надійність систем однакова.";
+                     document.getElementById('comparison').style.color = 'black';
+                }
+                document.getElementById('comparison').textContent = comparisonText;
+
+                resultsDiv.style.display = 'block';
+
+            } catch (error) {
+                 errorDiv.textContent = `Помилка розрахунку надійності: ${error.message}`;
+                 errorDiv.style.display = 'block';
+            }
+        }
+
+        function calculateLosses() {
+             const resultsDiv = document.getElementById('lossResults');
+             const errorDiv = document.getElementById('lossError');
+             resultsDiv.style.display = 'none';
+             errorDiv.style.display = 'none';
+             errorDiv.textContent = '';
+
+             try {
+                 const z_per_a = getVal('z_per_a');
+                 const z_per_p = getVal('z_per_p');
+                 const omega_tr = getVal('omega_tr');
+                 const tb_tr_years = getVal('tb_tr_years'); // В роках
+                 const kp_tr = getVal('kp_tr'); // Частка року
+                 const pm_tr = getVal('pm_tr'); // кВт
+                 const tm_tr = getVal('tm_tr'); // год/рік
+
+                 // Математичне сподівання аварійного недовипуску (кВт·год/рік)
+                 const mw_a = omega_tr * tb_tr_years * pm_tr * tm_tr;
+
+                 // Математичне сподівання планового недовипуску (кВт·год/рік)
+                 const mw_p = kp_tr * pm_tr * tm_tr;
+
+                 // Математичне сподівання збитків від переривання (грн/рік)
+                 const z_per = z_per_a * mw_a + z_per_p * mw_p;
+
+                 // --- Відображення результатів ---
+                 document.getElementById('mw_a').textContent = mw_a.toFixed(0);
+                 document.getElementById('mw_p').textContent = mw_p.toFixed(0);
+                 document.getElementById('z_per').textContent = z_per.toFixed(0);
+
+                 resultsDiv.style.display = 'block';
+
+             } catch (error) {
+                 errorDiv.textContent = `Помилка розрахунку збитків: ${error.message}`;
+                 errorDiv.style.display = 'block';
+             }
+        }
+    </script>
+</body>
+</html>
