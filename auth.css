@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.auth-container, .admin-panel {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+.admin-panel {
+    width: 400px;
+    text-align: left;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.auth-container h2, .admin-panel h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+.auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+.auth-container button, .admin-panel button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.admin-panel button.delete-btn {
+    background-color: #ff4d4d;
+    width: auto;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+.auth-container button:hover, .admin-panel button:hover {
+    background-color: #0056b3;
+}
+.admin-panel button.delete-btn:hover {
+    background-color: #e60000;
+}
+.auth-container p, .admin-panel p {
+    font-size: 14px;
+    margin-top: 15px;
+    color: #555;
+}
+.auth-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+.auth-container a:hover {
+    text-decoration: underline;
+}
+.auth-container .error, .admin-panel .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+.user-list li {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
