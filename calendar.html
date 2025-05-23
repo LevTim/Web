@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-календар з замітками</title>
+    <link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+<div class="controls">
+    <label for="year">Оберіть рік:</label>
+    <select id="year"></select>
+    <label for="month">Оберіть місяць:</label>
+    <select id="month"></select>
+    <label for="view">Вигляд:</label>
+    <select id="view">
+        <option value="single">Один місяць</option>
+        <option value="all">Рік</option>
+    </select>
+</div>
+
+<div class="calendar-container" id="calendar-container"></div>
+
+<button class="logout-btn" onclick="logout()">Вийти</button>
+
+<div id="note-modal" class="note-modal">
+    <span id="close-btn" class="close-btn">✖</span>
+    <h3>Додати замітку</h3>
+    <textarea id="note-text" placeholder="Напишіть вашу замітку..."></textarea>
+    <p id="note-timestamp"></p>
+    <button id="save-note">Зберегти замітку</button>
+</div>
+
+<script src="calendar.js"></script>
+</body>
+</html>
