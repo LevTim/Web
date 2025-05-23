@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизація та реєстрація</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+<div class="auth-container" id="auth-container">
+    <h2>Авторизація</h2>
+    <input type="text" id="username" placeholder="Введіть ім'я користувача">
+    <input type="password" id="password" placeholder="Введіть пароль">
+    <button onclick="login()">Увійти</button>
+    <p>Ще не маєте акаунта? <a href="#" onclick="toggleForm()">Зареєструйтесь</a></p>
+    <div class="error" id="error-message"></div>
+</div>
+
+<div class="auth-container" id="register-container" style="display: none;">
+    <h2>Реєстрація</h2>
+    <input type="text" id="reg-username" placeholder="Введіть ім'я користувача">
+    <input type="password" id="reg-password" placeholder="Введіть пароль">
+    <input type="password" id="reg-confirm-password" placeholder="Підтвердьте пароль">
+    <button onclick="register()">Зареєструватися</button>
+    <p>Вже маєте акаунт? <a href="#" onclick="toggleForm()">Увійти</a></p>
+    <div class="error" id="register-error-message"></div>
+</div>
+
+<div class="admin-panel" id="admin-panel" style="display: none;">
+    <h2>Панель адміністратора</h2>
+    <h3>Список користувачів</h3>
+    <ul id="user-list" class="user-list"></ul>
+    <button onclick="showAuthForm()">Повернутися до авторизації</button>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>
