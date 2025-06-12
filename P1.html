@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вебкалькулятор палива</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 50%; margin: auto; }
+        input { width: 80px; margin: 5px; }
+        button { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор палива</h1>
+        <h2>Розрахунок складу сухої та горючої маси</h2>
+        <label>Вуглець (C, %): <input type="number" id="C" min="0" max="100" required></label><br>
+        <label>Водень (H, %): <input type="number" id="H" min="0" max="100" required></label><br>
+        <label>Сірка (S, %): <input type="number" id="S" min="0" max="100" required></label><br>
+        <label>Азот (N, %): <input type="number" id="N" min="0" max="100" required></label><br>
+        <label>Кисень (O, %): <input type="number" id="O" min="0" max="100" required></label><br>
+        <label>Волога (W, %): <input type="number" id="W" min="0" max="100" required></label><br>
+        <label>Зола (A, %): <input type="number" id="A" min="0" max="100" required></label><br>
+        <button onclick="calculateFuel()">Розрахувати</button>
+        <h2>Розрахунок для мазуту</h2>
+        <label>Нижча теплота згоряння (Qg, МДж/кг): <input type="number" id="Qg" required></label><br>
+        <label>Вологість робочої маси (W_r, %): <input type="number" id="W_r" required></label><br>
+        <label>Зольність сухої маси (A_d, %): <input type="number" id="A_d" required></label><br>
+        <label>Вміст ванадію (V_g, мг/кг): <input type="number" id="V_g" required></label><br>
+        <button onclick="calculateOilFuel()">Розрахувати мазут</button>
+        <h2>Результати:</h2>
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        function calculateFuel() {
+            let C = parseFloat(document.getElementById("C").value) || 0;
+            let H = parseFloat(document.getElementById("H").value) || 0;
+            let S = parseFloat(document.getElementById("S").value) || 0;
+            let N = parseFloat(document.getElementById("N").value) || 0;
+            let O = parseFloat(document.getElementById("O").value) || 0;
+            let W = parseFloat(document.getElementById("W").value) || 0;
+            let A = parseFloat(document.getElementById("A").value) || 0;
+            
+            if (C + H + S + N + O + W + A > 100) {
+                alert("Сума компонентів не може перевищувати 100%!");
+                return;
+            }
+            
+            let KRS = 100 / (100 - W);
+            let KRG = 100 / (100 - W - A);
+            let Qr = 339 * C + 1030 * H - 108.8 * (O - S) - 25 * W;
+            let QdH = Qr * KRS;
+            let QrH = Qr * KRG;
+            let QpH = (Qr + QdH + QrH) / 3;
+            
+            let resultHTML = `
+                <h3>Суха маса:</h3>
+                <p>Hc = ${H * KRS}%, Cc = ${C * KRS}%, Sc = ${S * KRS}%, Nc = ${N * KRS}%, Oc = ${O * KRS}%, Ac = ${A * KRS}%</p>
+                <h3>Горюча маса:</h3>
+                <p>Hr = ${H * KRG}%, Cg = ${C * KRG}%, Sr = ${S * KRG}%, Nr = ${N * KRG}%, Or = ${O * KRG}%</p>
+                <h3>Теплота згоряння:</h3>
+                <p>Qr = ${Qr.toFixed(2)} МДж/кг</p>
+                <p>QdH = ${QdH.toFixed(2)} МДж/кг</p>
+                <p>QrH = ${QrH.toFixed(2)} МДж/кг</p>
+            `;
+            document.getElementById("result").innerHTML = resultHTML;
+        }
+        
+        function calculateOilFuel() {
+            let Qg = parseFloat(document.getElementById("Qg").value) || 0;
+            let W_r = parseFloat(document.getElementById("W_r").value) || 0;
+            let A_d = parseFloat(document.getElementById("A_d").value) || 0;
+            let V_g = parseFloat(document.getElementById("V_g").value) || 0;
+            
+            let factor = (100 - W_r - A_d) / 100;
+            let Qr_oil = Qg * factor;
+            
+            document.getElementById("result").innerHTML += `
+                <h3>Розрахунок мазуту:</h3>
+                <p>Нижча теплота згоряння мазуту: ${Qr_oil.toFixed(2)} МДж/кг</p>
+                <p>Вміст ванадію в робочій масі: ${(V_g * (100 - W_r) / 100).toFixed(2)} мг/кг</p>
+            `;
+        }
+    </script>
+</body>
+</html>
